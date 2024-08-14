@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    image: spring-mongodb-docker
+    depends_on:
+      - mongodb
+    environment:
+      DB_URI: mongodb://mongodb:27017/?replicaSet=rs0
+      DB_DATABASE: development
+    networks:
+      - public
+      - private
+    ports:
+      - "8080:8080"
+
+  mongodb:
+    image: mongo:7.0
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}) }" | mongosh --port 27017 --quiet
+      interval: 10s
+      start_period: 30s
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/config
+    networks:
+      - private
+
+volumes:
+  mongodb-data:
+  mongodb-config:
+
+networks:
+  public:
+  private:

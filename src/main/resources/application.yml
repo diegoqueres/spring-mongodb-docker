@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: spring-mongodb-docker
+  data:
+    mongodb:
+      uri: ${DB_URI}
+      database: ${DB_DATABASE}
