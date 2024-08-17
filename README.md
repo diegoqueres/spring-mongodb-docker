@@ -2,7 +2,15 @@
 
 **A MongoDB single-node replica set setup on Docker Compose with Spring Boot app**
 
-You can use it as reference to run spring boot applications for _local development_.
+You can use it as reference to run spring boot applications for _local development_. 
+
+This setup allows you to create transaction-aware methods without the need to create replica instances. Like this:
+```kotlin
+ @Transactional
+ fun save(olympicSport: OlympicSport): OlympicSport {
+    return repository.save(olympicSport)
+ }
+```
 
 ## Prerequisites
 
@@ -31,11 +39,11 @@ Before you begin, you will need to have the following tools installed on your ma
 2. **Add mongodb instance to your hosts file**:
    You must add a line in your `/etc/hosts` file to map mongodb to the localhost IP address:
    ```
-   127.0.0.1 mongodb
+   127.0.0.1 host.docker.internal
    ```
    Now you can connect to database using MongoDB Shell:
     ```bash
-    mongosh --host mongodb --port 27017
+    mongosh --host host.docker.internal --port 27017
     ```
 
 ## API Usage
@@ -118,4 +126,4 @@ This will return a JSON array of sport with id `66bd24e964a11052c43118f1` curren
 
 This setup example was based on **Anthony Simmon's** article: _The only local MongoDB replica set with Docker Compose guide you’ll ever need!_: https://medium.com/workleap/the-only-local-mongodb-replica-set-with-docker-compose-guide-youll-ever-need-2f0b74dd8384
 
-I used the setup proposed in the article, with small changes, to run with a Spring Boot application.
+I used the setup proposed in the article to run with a Spring Boot application.
